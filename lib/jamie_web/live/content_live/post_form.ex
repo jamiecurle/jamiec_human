@@ -98,7 +98,9 @@ defmodule JamieWeb.ContentLive.PostForm do
   def handle_event("sign-image-url", %{"name" => name}, socket) do
     host = Application.get_env(:jamie, :images)[:host]
     bucket = Application.get_env(:ex_aws, :s3)[:bucket]
-    key = Ecto.UUID.generate() <> Path.extname(name)
+    # The prefix must be part of the S3 key, not just the public URL —
+    # otherwise we sign a PUT for the bucket root and link to /posts/.
+    key = "posts/" <> Ecto.UUID.generate() <> Path.extname(name)
 
     {:ok, url} =
       :s3

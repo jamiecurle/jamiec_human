@@ -44,6 +44,7 @@ export default function imageHandler({ dropTarget = window, textareaId } = {}) {
   }
 
   function queueUpload(textarea, file) {
+
     insertAtCursor(textarea, `![Uploading ${file.name}…]()`);
     window.dispatchEvent(
       new CustomEvent("sign-image-url", {
