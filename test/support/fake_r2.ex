@@ -31,4 +31,30 @@ defmodule Jamie.Support.FakeR2 do
     contents = Enum.map(files, fn {key, _} -> %{key: key} end)
     {:ok, %{body: %{contents: contents}}}
   end
+
+  def list_objects(prefix \\ "") do
+    Process.get(@store, %{})
+    |> Enum.filter(fn {key, _} -> String.starts_with?(key, prefix) end)
+    |> Enum.map(fn {key, contents} -> {key, byte_size(contents)} end)
+    |> Enum.sort()
+  end
+
+  def copy_file(source_key, destination_key) do
+    files = Process.get(@store, %{})
+
+    case files do
+      %{^source_key => contents} ->
+        Process.put(@store, Map.put(files, destination_key, contents))
+        {:ok, %{status_code: 200}}
+
+      _ ->
+        {:error, :not_found}
+    end
+  end
+
+  def delete_files(keys) do
+    files = Process.get(@store, %{})
+    Process.put(@store, Map.drop(files, keys))
+    {:ok, %{status_code: 200}}
+  end
 end

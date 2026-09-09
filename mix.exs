@@ -10,7 +10,7 @@ defmodule Jamie.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      dialyzer: [plt_add_apps: [:ex_unit]],
+      dialyzer: [plt_add_apps: [:ex_unit, :mix]],
       compilers: [:phoenix_live_view] ++ Mix.compilers(),
       listeners: [Phoenix.CodeReloader]
     ]
