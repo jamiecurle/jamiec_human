@@ -9,6 +9,39 @@ defmodule Jamie.Support.ContentFixtures do
   alias Jamie.Content.Bookmark
   alias Jamie.Repo
 
+  def markdown_with_images do
+    """
+    "# Hello, World!
+    ![2018.jpeg](https://media.jamiecurle.com/somepath/7ef11ccb-0347-4f38-920f-3889d837fdf4.jpeg)
+
+
+    Here's a list of some great ideas
+    * test the thing
+    * deploy the thing
+    * use the thing
+
+    ![2020.jpeg](https://media.jamiecurle.com/1ed61e8a-09e8-47e8-95fa-fad1c1c471d1.jpeg)
+
+    """
+  end
+
+  def markdown_with_images_from_jc_and_others do
+    """
+    "# Hello, World!
+    ![2018.jpeg](https://media.jamiecurle.com/somepath/7ef11ccb-0347-4f38-920f-3889d837fdf4.jpeg)
+
+
+    Here's a list of some great ideas
+    * test the thing
+    * deploy the thing
+    * use the thing
+
+
+    ![2020.jpeg](https://media.not-jamiecurle.com/1ed61e8a-09e8-47e8-95fa-fad1c1c471d1.jpeg)
+
+    """
+  end
+
   @default_note_attrs [
     title: "Basic note",
     markdown: """

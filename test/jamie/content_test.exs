@@ -13,6 +13,42 @@ defmodule Jamie.Content.Test do
   alias Jamie.Repo
   alias Jamie.Support.ContentFixtures
 
+  describe "all_images_in_all_posts" do
+    test "we get a nice list of all images in the posts" do
+      # make one hundred posts with all jc images
+      1..100
+      |> Enum.each(fn i ->
+        ContentFixtures.post_attrs(
+          status: :published,
+          title: "test fixture #{i}",
+          markdown: ContentFixtures.markdown_with_images()
+        )
+        |> Content.create_post()
+      end)
+
+      # now make 100 with a mixture of images
+      101..200
+      |> Enum.each(fn i ->
+        ContentFixtures.post_attrs(
+          status: :published,
+          title: "test fixture #{i}",
+          markdown: ContentFixtures.markdown_with_images_from_jc_and_others()
+        )
+        |> Content.create_post()
+      end)
+
+      # despite having four hundred images in the markdown, we have only two
+      # images returned.
+      images = Content.all_images_in_all_posts()
+
+      assert images ==
+               [
+                 "somepath/7ef11ccb-0347-4f38-920f-3889d837fdf4.jpeg",
+                 "1ed61e8a-09e8-47e8-95fa-fad1c1c471d1.jpeg"
+               ]
+    end
+  end
+
   describe "update_note/1" do
     setup do
       # make a note

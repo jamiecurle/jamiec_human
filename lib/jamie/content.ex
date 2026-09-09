@@ -3,16 +3,38 @@ defmodule Jamie.Content do
   The content context boundary.
   """
 
-  alias Jamie.Content.Bookmark
+  import Ecto.Query
 
+  alias Jamie.Accounts.Scope
+  alias Jamie.Content.Bookmark
   alias Jamie.Content.{Note, Post}
+  alias Jamie.Content.PostImageHelper
   alias Jamie.Content.PostRevision
   alias Jamie.Repo
-  import Ecto.Query
-  alias Jamie.Accounts.Scope
   alias Jamie.Workers.OgImageCreate
 
   @snapshot_every 50
+
+  @doc """
+  from all the posts in the database get the
+  images
+  """
+  def all_images_in_all_posts do
+    # get a nested list of all the images
+    {:ok, nested_images} =
+      Repo.transaction(fn ->
+        Post
+        |> select([p], p.markdown)
+        |> Repo.stream()
+        |> Stream.map(&PostImageHelper.md_images/1)
+        |> Enum.to_list()
+      end)
+
+    # and now return a unique list
+    nested_images
+    |> List.flatten()
+    |> Enum.uniq()
+  end
 
   @doc """
   update note
